@@ -14,10 +14,26 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Column="1" >
-            <Button x:Name="GetNewSchedule" 
-                    Height="40" Content="Schedule" Margin="5" 
-                    Click="GetNewSchedule_Click"
-                    DockPanel.Dock="Top"/>
+            <DockPanel DockPanel.Dock="Top">
+                <DockPanel DockPanel.Dock="Top">
+                    <Button x:Name="RestartBtn" DockPanel.Dock="Right"
+                        Margin="5"
+                        Width="40"
+                        Content="R"
+                        Click="RestartBtn_Click"
+                        IsEnabled="False"/>
+                    <Button x:Name="GetNewScheduleBtn" 
+                    Height="40" Content="Schedule" Margin="5"
+                    Click="GetNewScheduleBtn_Click" />
+                </DockPanel>
+
+                <Button x:Name="AnalyzeBtn" DockPanel.Dock="Bottom"
+                        Margin="5" Height="30"
+                        Content="Анализ расписания"
+                        Visibility="Collapsed"
+                        Click="AnalyzeBtn_Click"/>
+            </DockPanel>
+
             <ScrollViewer x:Name="RightScrollViewer"
                       VerticalScrollBarVisibility="Auto"
                           >
@@ -33,32 +49,30 @@
 
         <StackPanel Margin="5,20,5,0">
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="01:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="09:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="02:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="10:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="03:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="11:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="04:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="12:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="05:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="13:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="06:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="14:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="07:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="15:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">
-                <TextBlock Text="08:00" VerticalAlignment="Bottom"/>
+                <TextBlock Text="16:00" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
             </Border>
         </StackPanel>
-
-
 
     </Grid>
 </Window>

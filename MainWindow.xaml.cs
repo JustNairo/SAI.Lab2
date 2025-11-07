@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace Lab2
 {
@@ -93,6 +94,13 @@ namespace Lab2
 
         private void ShowSchedule(Schedule schedule)
         {
+            DoubleAnimation appearAnim = new DoubleAnimation()
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromSeconds(0.5),
+            };
+
             double totalTime = 0;
 
             for (int i = 0; i < schedule.TaskOrder.Count; i++)
@@ -110,8 +118,6 @@ namespace Lab2
                         string taskToString = task.ToString();
                         if (childLabel.Content.ToString() == taskToString)
                         {
-                            element.Visibility = Visibility.Collapsed;
-
                             Border scheduledTask = new Border()
                             {
                                 Height = task.DurationHours * PxPerHour,
@@ -122,6 +128,8 @@ namespace Lab2
 
                             scheduledTask.Child = label;
 
+                            element.Visibility = Visibility.Collapsed;
+                            scheduledTask.BeginAnimation(OpacityProperty, appearAnim);
                             schedulePannel.Children.Add(scheduledTask);
                         }
                     }
@@ -129,11 +137,39 @@ namespace Lab2
             }
         }
 
-        private void GetNewSchedule_Click(object sender, RoutedEventArgs e)
+        private void GetNewScheduleBtn_Click(object sender, RoutedEventArgs e)
         {
             Schedule schedule = RunGeneticAlgorithm(tasks, fixedTasks);
 
             ShowSchedule(schedule);
+
+            RestartBtn.IsEnabled = true;
+            AnalyzeBtn.Visibility = Visibility.Visible;
+            GetNewScheduleBtn.IsEnabled = false;
+        }
+
+        private void RestartBtn_Click(object sender, RoutedEventArgs e)
+        {
+            GetNewScheduleBtn.IsEnabled = true;
+            RestartBtn.IsEnabled = false;
+            AnalyzeBtn.Visibility = Visibility.Collapsed;
+            Restart();
+        }
+
+        private void Restart()
+        {
+            schedulePannel.Children.Clear();
+            foreach(UIElement element in tasksPannel.Children)
+            {
+                element.Visibility = Visibility.Visible;
+                element.Opacity = 1.0;
+            }
+        }
+
+        private void AnalyzeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            AnalyzeWindow analyzeWindow = new AnalyzeWindow();
+            analyzeWindow.ShowDialog();
         }
     }
 }
