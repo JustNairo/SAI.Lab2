@@ -1,6 +1,6 @@
 ﻿namespace Lab2
 {
-    internal class Task
+    public class Task
     {
         public string Name { get; set; }
         public int Priority { get; set; } // Приоритет (1-высокий, 2-средний, 3-низкий)

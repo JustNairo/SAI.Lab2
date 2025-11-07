@@ -1,6 +1,6 @@
 ﻿namespace Lab2
 {
-    internal class Schedule
+    public class Schedule
     {
         public List<Task> TaskOrder { get; set; } // Порядок выполнения задач
         public double Fitness { get; set; }

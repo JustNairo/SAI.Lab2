@@ -12,10 +12,12 @@ namespace Lab2
     public partial class MainWindow : Window
     {
         const int PxPerHour = 80;
-        const int maxWorkHours = 8;
+        public const int maxWorkHours = 8;
 
         private List<Task> tasks;
         private List<Task> fixedTasks;
+
+        private string descriptionString;
 
         public MainWindow()
         {
@@ -46,6 +48,7 @@ namespace Lab2
         {
             // Запускаем генетический алгоритм
             var ga = new ScheduleGeneticAlgorithm(
+                ref descriptionString,
                 tasksToSchedule: tasks,
                 fixedTasks: fixedTasks,
                 populationSize: 100,
