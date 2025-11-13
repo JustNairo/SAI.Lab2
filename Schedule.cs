@@ -5,9 +5,6 @@
         public List<Task> TaskOrder { get; set; } // Порядок выполнения задач
         public double Fitness { get; set; }
 
-        public Schedule Parent1 { get; set; }
-        public Schedule Parent2 { get; set; }
-
         public Schedule(List<Task> tasks)
         {
             TaskOrder = new List<Task>();

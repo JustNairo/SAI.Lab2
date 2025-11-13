@@ -43,10 +43,6 @@
             </ScrollViewer>
         </DockPanel>
 
-        <StackPanel x:Name="schedulePannel" Margin="5,20,5,0">
-
-        </StackPanel>
-
         <StackPanel x:Name="testPannel" Margin="5,20,5,0">
             <Border Height="120" Background="#ef9bfa" Margin="0, 160, 0, 5" CornerRadius="3">
                 <Label Content="Важная встреча (1,5ч)"/>
@@ -55,6 +51,12 @@
                 <Label Content="Совещание (1ч)"/>
             </Border>
         </StackPanel>
+
+        <StackPanel x:Name="schedulePannel" Margin="5,20,5,0">
+
+        </StackPanel>
+
+
 
         <StackPanel Margin="5,20,5,0">
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray" Height="80">

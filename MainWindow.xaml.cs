@@ -48,7 +48,6 @@ namespace Lab2
         {
             // Запускаем генетический алгоритм
             var ga = new ScheduleGeneticAlgorithm(
-                ref descriptionString,
                 tasksToSchedule: tasks,
                 fixedTasks: fixedTasks,
                 populationSize: 100,
@@ -91,9 +90,6 @@ namespace Lab2
                 newTask.Child = label;
 
                 tasksPannel.Children.Add(newTask);
-
-                if (fixedTasks.Contains(tasks[i]))
-                    newTask.Visibility = Visibility.Collapsed;
             }
 
         }
