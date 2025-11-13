@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -12,7 +11,7 @@ namespace Lab2
     public partial class MainWindow : Window
     {
         const int PxPerHour = 80;
-        public const int maxWorkHours = 8;
+        const int maxWorkHours = 8;
 
         private List<Task> tasks;
         private List<Task> fixedTasks;
@@ -63,6 +62,12 @@ namespace Lab2
 
         private void ShowTasks(List<Task> tasks, List<Task> fixedTasks)
         {
+            string[] colors = { "#ef9bfa", "#ff9dc4", "#ffb1a1", "#fac593", "#e8da85", "#bbf28f", "#6ef7c8", "#5ee9f7", "#9bd4fa" };
+            int tasksCount = tasks.Count();
+            Brush[] brushes = new Brush[tasksCount];
+            for(int i  = 0; i < tasksCount; i++)
+                brushes[i] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
+            /*
             Brush[] brushes = new Brush[]
             {
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ef9bfa")),
@@ -75,6 +80,7 @@ namespace Lab2
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5ee9f7")),
                 new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9bd4fa")),
             };
+            */
 
             for (int i = 0; i < tasks.Count; i++)
             {
