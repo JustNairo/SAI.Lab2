@@ -16,7 +16,7 @@ namespace Lab2
         private List<Task> tasks;
         private List<Task> fixedTasks;
 
-        private string descriptionString;
+        private AlgorithmInfo infoContainer;
 
         public MainWindow()
         {
@@ -45,8 +45,17 @@ namespace Lab2
 
         private Schedule RunGeneticAlgorithm(List<Task> tasks, List<Task> fixedTasks)
         {
+            infoContainer = new AlgorithmInfo()
+            {
+                Name = "Генетический алгоритм для составления расписания",
+                TaskCount = tasks.Count,
+                TotalTime = tasks.Sum(t => t.DurationHours),
+                MaxWorkingHours = maxWorkHours,
+            };
+
             // Запускаем генетический алгоритм
             var ga = new ScheduleGeneticAlgorithm(
+                infoContainer,
                 tasksToSchedule: tasks,
                 fixedTasks: fixedTasks,
                 populationSize: 100,
@@ -176,7 +185,8 @@ namespace Lab2
 
         private void AnalyzeBtn_Click(object sender, RoutedEventArgs e)
         {
-            AnalyzeWindow analyzeWindow = new AnalyzeWindow();
+            AnalyzeWindow analyzeWindow = new AnalyzeWindow(infoContainer);
+            analyzeWindow.Owner = this;
             analyzeWindow.ShowDialog();
         }
     }

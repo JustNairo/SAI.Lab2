@@ -5,8 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab2"
         mc:Ignorable="d"
-        Title="AnalyzeWindow" Height="450" Width="800">
+        Title="AnalyzeWindow" Height="500" Width="700"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="FirstStyle">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0, 5, 20, 5"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <StackPanel Orientation="Vertical" Margin="5">
+            <TextBlock x:Name="AlgNameTB" Text="{Binding Name}" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Всего задач: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding TaskCount}" Style="{StaticResource FirstStyle}"/>
+                
+                <TextBlock Text="Суммарное время: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding TotalTime}" Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="ч." Style="{StaticResource FirstStyle}"/>
+                
+                <TextBlock Text="Рабочий день: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding MaxWorkingHours}" Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="ч." Style="{StaticResource FirstStyle}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Margin="0, 20, 0, 20">
+                <TextBlock x:Name="InitialBestScheduleTB"
+                   Text="Начальное поколение: Лучшее расписание = "/>
+                <TextBlock Text="{Binding InitialBestSchedule}" 
+                    TextWrapping="Wrap"
+                    HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <TextBlock Text="{Binding PopulationFitnessString}"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Выполнено задач: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding CompletedTasksCount}" Style="{StaticResource FirstStyle}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Использовано времени: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding UsedTime}" Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="ч." Style="{StaticResource FirstStyle}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="EfficencyTB" Text="Эффективность: " Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="{Binding Efficency}" Style="{StaticResource FirstStyle}"/>
+                <TextBlock Text="%" Style="{StaticResource FirstStyle}"/>
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Window>

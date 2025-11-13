@@ -18,10 +18,13 @@ namespace Lab2
         private List<Task> availableTasks;
         private List<Task> fixedTasks;
 
-        public ScheduleGeneticAlgorithm(List<Task> tasksToSchedule, List<Task> fixedTasks,
-                                      int populationSize = 50,
-                                      double mutationRate = 0.05, double crossoverRate = 0.8,
-                                      int maxWorkHours = 8)
+        private AlgorithmInfo infoContainer;
+
+        public ScheduleGeneticAlgorithm(AlgorithmInfo infoContainer,
+                                        List<Task> tasksToSchedule, List<Task> fixedTasks,
+                                        int populationSize = 50,
+                                        double mutationRate = 0.05, double crossoverRate = 0.8,
+                                        int maxWorkHours = 8)
         {
             random = new Random();
             this.populationSize = populationSize;
@@ -31,6 +34,8 @@ namespace Lab2
 
             this.availableTasks = tasksToSchedule;
             this.fixedTasks = fixedTasks;
+
+            this.infoContainer = infoContainer;
         }
 
         // 1. Создание начальной популяции
@@ -161,6 +166,10 @@ namespace Lab2
             CalculateFitness(population);
 
             Schedule bestSchedule = population.OrderByDescending(s => s.Fitness).First();
+            infoContainer.InitialBestSchedule = new Schedule(bestSchedule.TaskOrder)
+            {
+                Fitness = bestSchedule.Fitness,
+            };
 
             for (int generation = 1; generation <= maxGenerations; generation++)
             {
@@ -195,10 +204,34 @@ namespace Lab2
                 if (generation % 20 == 0)
                 {
                     double avgFitness = population.Average(s => s.Fitness);
+                    infoContainer.PopulationFitness[generation] = (bestSchedule.Fitness, avgFitness);
                 }
             }
 
+            GetInfo(bestSchedule, infoContainer);
+
             return bestSchedule;
+        }
+
+        private void GetInfo(Schedule schedule, AlgorithmInfo infoContainer)
+        {
+            double totalTime = 0;
+            int taskNumber = 1;
+
+            foreach (var task in schedule.TaskOrder)
+            {
+                if (totalTime + task.DurationHours <= maxWorkHours)
+                {
+                    totalTime += task.DurationHours;
+                    taskNumber++;
+                }
+                else
+                    break;
+            }
+
+            infoContainer.CompletedTasksCount = taskNumber - 1;
+            infoContainer.UsedTime = totalTime;
+            infoContainer.Efficency = totalTime / maxWorkHours * 100;
         }
     }
 }
