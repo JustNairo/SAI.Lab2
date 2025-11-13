@@ -91,6 +91,9 @@ namespace Lab2
                 newTask.Child = label;
 
                 tasksPannel.Children.Add(newTask);
+
+                if (fixedTasks.Contains(tasks[i]))
+                    newTask.Visibility = Visibility.Collapsed;
             }
 
         }
