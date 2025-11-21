@@ -37,11 +37,13 @@ namespace Lab2
                 new Task("Совещание", 1.0, 2) {StartTime = new TimeOnly(7, 0)},
             };
 
-            ShowTasks(tasks, fixedTasks);
+            // Выводим блоки задач на экран
+            ShowTasks(tasks);
         }
 
         private Schedule RunGeneticAlgorithm(List<Task> tasks, List<Task> fixedTasks)
         {
+            // Создаём контейнер для хранении информации об алгоритме
             infoContainer = new AlgorithmInfo()
             {
                 Name = "Генетический алгоритм для составления расписания",
@@ -50,8 +52,8 @@ namespace Lab2
                 MaxWorkingHours = maxWorkHours,
             };
 
-            // Запускаем генетический алгоритм
-            var ga = new ScheduleGeneticAlgorithm(
+            // Создаём генетический алгоритм
+            ScheduleGeneticAlgorithm ga = new ScheduleGeneticAlgorithm(
                 infoContainer,
                 tasksToSchedule: tasks,
                 fixedTasks: fixedTasks,
@@ -61,13 +63,14 @@ namespace Lab2
                 maxWorkHours: maxWorkHours
             );
 
-            var bestSchedule = ga.Run(maxGenerations: 200);
+            //Запускаем генетический алгоритм
+            Schedule bestSchedule = ga.Run(maxGenerations: 200);
 
             return bestSchedule;
         }
 
-        // Метод вывода блоков задач в правую колонку на окне
-        private void ShowTasks(List<Task> tasks, List<Task> fixedTasks)
+        // Метод вывода блоков задач (списка задач) в правую колонку на окне 
+        private void ShowTasks(List<Task> tasks)
         {
             // Создаем кисти для покраски блоков
             string[] colors = { "#ef9bfa", "#ff9dc4", "#ffb1a1", "#fac593", 
@@ -99,6 +102,7 @@ namespace Lab2
         // Метод вывода на экран сформированного расписания
         private void ShowSchedule(Schedule schedule)
         {
+            // Анимация появляения блоков задач в расписании
             DoubleAnimation appearAnim = new DoubleAnimation()
             {
                 From = 0.0,
@@ -108,42 +112,38 @@ namespace Lab2
 
             double totalTime = 0; // Время, занятое задачами
 
-            for (int i = 0; i < schedule.TaskOrder.Count; i++)
+            foreach(Task task in schedule.TaskOrder)
             {
-                Task task = schedule.TaskOrder[i];
-
                 if (totalTime + task.DurationHours > maxWorkHours)
                     break;
-                // if (totalTime + task.DurationHours <= maxWorkHours)
-                // {
+
                 totalTime += task.DurationHours;
 
-                // Выводим на окно элемент
-                // tasksPannel.Children - Блоки с задачами
-                foreach (UIElement element in tasksPannel.Children) // КРИНЖ! - переписать
+                Label label = new Label() { Content = task.ToString() };
+                Border scheduledTaskBlock = new Border()
+                {
+                    Height = task.DurationHours * PxPerHour,
+                    CornerRadius = new CornerRadius(3),
+                    Child = label,
+                };
+
+                // Ищем эту задачу в выведенных на экран
+                foreach (UIElement element in tasksPannel.Children)
                 {
                     Border childBorder = (Border)element; // Изначально element типа Border
                     Label childLabel = (Label)childBorder.Child; // У каждого элемента обязательно есть Child - Label
 
-                    string taskToString = task.ToString();
-                    if (childLabel.Content.ToString() == taskToString) 
+                    if (childLabel.Content.ToString() == task.ToString()) 
                     {
-                        Border scheduledTask = new Border()
-                        {
-                            Height = task.DurationHours * PxPerHour,
-                            Background = childBorder.Background,
-                            CornerRadius = new CornerRadius(3),
-                        };
-                        Label label = new Label() { Content = childLabel.Content };
-
-                        scheduledTask.Child = label;
+                        scheduledTaskBlock.Background = childBorder.Background;
 
                         element.Visibility = Visibility.Collapsed;
-                        scheduledTask.BeginAnimation(OpacityProperty, appearAnim);
-                        schedulePannel.Children.Add(scheduledTask);
+                        scheduledTaskBlock.BeginAnimation(OpacityProperty, appearAnim);
+                        schedulePannel.Children.Add(scheduledTaskBlock);
+
+                        break;
                     }
                 }
-                // }
             }
         }
 
@@ -163,6 +163,7 @@ namespace Lab2
             GetNewScheduleBtn.IsEnabled = true;
             RestartBtn.IsEnabled = false;
             AnalyzeBtn.Visibility = Visibility.Collapsed;
+
             Restart();
         }
 
