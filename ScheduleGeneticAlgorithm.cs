@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Lab2
+﻿namespace Lab2
 {
-    
-
     internal class ScheduleGeneticAlgorithm
     {
         private readonly Random random;
