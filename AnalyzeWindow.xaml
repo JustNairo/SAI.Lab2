@@ -38,7 +38,7 @@
                     HorizontalAlignment="Stretch"/>
             </StackPanel>
 
-            <TextBlock Text="{Binding PopulationFitnessString}"/>
+            <TextBlock Text="{Binding GenerationFitnessString}"/>
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Выполнено задач: " Style="{StaticResource FirstStyle}"/>

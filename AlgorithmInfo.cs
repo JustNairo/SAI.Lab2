@@ -7,7 +7,7 @@
     {
         public AlgorithmInfo()
         {
-            PopulationFitness = new Dictionary<int, (double, double)>();
+            GenerationFitness = new Dictionary<int, (double, double)>();
         }
 
         public string Name { get; set; }
@@ -16,14 +16,14 @@
         public double MaxWorkingHours { get; set; }
 
         public Schedule InitialBestSchedule { get; set; }
-        public Dictionary<int, (double, double)> PopulationFitness {  get; set; }
+        public Dictionary<int, (double, double)> GenerationFitness {  get; set; }
 
-        public string PopulationFitnessString
+        public string GenerationFitnessString
         {
             get
             {
                 string result = "";
-                foreach(var pair in PopulationFitness)
+                foreach(var pair in GenerationFitness)
                 {
                     result += "Поколение " + pair.Key.ToString() + ": "
                     + "Лучшая приспособленность = " + Math.Round(pair.Value.Item1, 2) + ", "

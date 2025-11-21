@@ -45,6 +45,7 @@ namespace Lab2
 
             for (int i = 0; i < populationSize; i++)
             {
+                // Получаем задачи в случайном порядке
                 List<Task> shuffledTasks = availableTasks.OrderBy(x => random.Next()).ToList();
                 population.Add(new Schedule(shuffledTasks));
             }
@@ -55,37 +56,41 @@ namespace Lab2
         // 2. Фитнес-функция
         private void CalculateFitness(List<Schedule> population)
         {
+            // Определяем приспособленность для каждой популяции
             foreach (var schedule in population)
             {
                 double fitness = 0;
-                double totalTime = 0;
-                int scheduledTasks = 0;
+                double totalTime = 0; // Время задач, которые можно было выполнить
+                int scheduledTasks = 0; // Колчиество задач, которые могут быть выполнены
 
-                // Критерий - приоритет. Чем выше приоритет, тем больше бонус
+                // Определяем приспособленность по критериям
+                // Критерий №1 - приоритет. Чем выше приоритет, тем больше бонус
                 foreach (var task in schedule.TaskOrder)
                 {
-                    if (totalTime + task.DurationHours <= maxWorkHours)
-                    {
-                        scheduledTasks++;
-                        totalTime += task.DurationHours;
-
-                        fitness += (4 - task.Priority) * 0.1;
-                    }
-                    else
+                    if (totalTime + task.DurationHours > maxWorkHours)
                         break;
+
+                    scheduledTasks++;
+                    totalTime += task.DurationHours;
+
+                    fitness += (4 - task.Priority) * 0.1;
                 }
 
-                // Критерий - количество задач
+                // Критерий №2 - количество задач
                 fitness += scheduledTasks * 2;
 
-                // Критерий - занятое время. Чем больше времени занято, тем лучше
+                // Критерий №3 - занятое время. Чем больше времени занято, тем лучше
                 double timeEfficiency = 1.0 - Math.Abs(totalTime - maxWorkHours) / maxWorkHours;
                 fitness += timeEfficiency;
 
-                // Штраф - у фиксированной задачи не то время
+                // Штраф - фиксированная задача находится не там в расписании
                 foreach (var task in fixedTasks)
                 {
-                    int index = schedule.TaskOrder.FindIndex(t => t.Name.Equals(task.Name)); // Имя даёт уникальную идентификацию
+                    // Находим индекс задачи в расписании
+                    int index = schedule.TaskOrder.FindIndex(t => t.Equals(task));
+                    
+                    // Если время начала задачи, которая должна быть в определённом месте,
+                    // не совпадает с заданным, то не гуд, не гуд  
                     if (!schedule.TaskOrder[index].StartTime.Equals(task.StartTime))
                         fitness = 0;
                 }
@@ -97,31 +102,39 @@ namespace Lab2
         // 3. Турнирный отбор
         private Schedule TournamentSelection(List<Schedule> population, int tournamentSize = 3)
         {
-            List<Schedule> tournament = population.OrderBy(x => random.Next()).Take(tournamentSize).ToList();
+            // Выбираем случайный список расписаний размером tournamentSize
+            List<Schedule> tournament = population.OrderBy(x => random.Next())
+                .Take(tournamentSize).ToList();
+            // Возвращаем самое приспособленное
             return tournament.OrderByDescending(s => s.Fitness).First();
         }
 
         // 4. Скрещивание для расписаний
         private (Schedule, Schedule) OrderCrossover(Schedule parent1, Schedule parent2)
         {
-            Task[] child1Tasks = new Task[parent1.TaskOrder.Count];
-            Task[] child2Tasks = new Task[parent2.TaskOrder.Count];
-
+            // Если не судьба, то не проводим скрещивание
             if (random.NextDouble() > crossoverRate)
             {
                 return (new Schedule(new List<Task>(parent1.TaskOrder)),
                         new Schedule(new List<Task>(parent2.TaskOrder)));
             }
 
+            // Определения массивов задач для child1 и child2
+            Task[] child1Tasks = new Task[parent1.TaskOrder.Count];
+            Task[] child2Tasks = new Task[parent2.TaskOrder.Count];
+
             // Выбираем случайный сегмент
+            // Этот сегмент останется у ребенка от одного родителя, остальные задачи будут от другого
             int start = random.Next(0, parent1.TaskOrder.Count);
             int end = random.Next(start, parent1.TaskOrder.Count);
 
-            var child1Remaining = parent2.TaskOrder.Where(t => !parent1.TaskOrder.GetRange(start, end - start + 1).Contains(t)).ToList();
-            var child2Remaining = parent1.TaskOrder.Where(t => !parent2.TaskOrder.GetRange(start, end - start + 1).Contains(t)).ToList();
+            // Список задач для child1. Эти задачи взяты из parent2 при этом остуствуют в сегменте parent1, определённом выше выше
+            List<Task> child1Remaining = parent2.TaskOrder.Where(t => !parent1.TaskOrder.GetRange(start, end - start + 1).Contains(t)).ToList();
+            List<Task> child2Remaining = parent1.TaskOrder.Where(t => !parent2.TaskOrder.GetRange(start, end - start + 1).Contains(t)).ToList();
 
             int child1Index = 0, child2Index = 0;
 
+            // Заполняем список задач для детей
             for (int i = 0; i < parent1.TaskOrder.Count; i++)
             {
                 if (i >= start && i <= end)
@@ -145,9 +158,11 @@ namespace Lab2
         // 5. Мутация 
         private void SwapMutate(Schedule schedule)
         {
+            // Если не судьба, то без мутации
             if (random.NextDouble() > mutationRate)
                 return;
 
+            // Индексы случайных задач
             int index1 = random.Next(schedule.TaskOrder.Count);
             int index2 = random.Next(schedule.TaskOrder.Count);
 
@@ -156,6 +171,7 @@ namespace Lab2
             schedule.TaskOrder[index1] = schedule.TaskOrder[index2];
             schedule.TaskOrder[index2] = temp;
 
+            //Определем стартовое время для нового списка задач
             schedule.CalculateTasksStartTime();
         }
 
@@ -164,8 +180,9 @@ namespace Lab2
         {
             List<Schedule> population = CreateInitialPopulation();
             CalculateFitness(population);
-
             Schedule bestSchedule = population.OrderByDescending(s => s.Fitness).First();
+
+            // Сохраняем информацию об алгоритме
             infoContainer.InitialBestSchedule = new Schedule(bestSchedule.TaskOrder)
             {
                 Fitness = bestSchedule.Fitness,
@@ -197,17 +214,20 @@ namespace Lab2
                 population = newPopulation;
                 CalculateFitness(population);
 
+                // Определемя лучшее расписание
                 var currentBest = population.OrderByDescending(s => s.Fitness).First();
                 if (currentBest.Fitness > bestSchedule.Fitness)
                     bestSchedule = currentBest;
 
+                // Сохраняем информацию у каждого 20 поколения
                 if (generation % 20 == 0)
                 {
                     double avgFitness = population.Average(s => s.Fitness);
-                    infoContainer.PopulationFitness[generation] = (bestSchedule.Fitness, avgFitness);
+                    infoContainer.GenerationFitness[generation] = (bestSchedule.Fitness, avgFitness);
                 }
             }
 
+            // Заполняем оставшуюся информацию
             GetInfo(bestSchedule, infoContainer);
 
             return bestSchedule;
