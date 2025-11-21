@@ -1,5 +1,8 @@
 ﻿namespace Lab2
 {
+    /// <summary>
+    /// Клас для сбора и вывода информации о результатах алгоритма
+    /// </summary>
     public class AlgorithmInfo
     {
         public AlgorithmInfo()
@@ -8,8 +11,8 @@
         }
 
         public string Name { get; set; }
-        public int TaskCount { get; set; }
-        public double TotalTime { get; set; }
+        public int TaskCount { get; set; } 
+        public double TotalTime { get; set; } 
         public double MaxWorkingHours { get; set; }
 
         public Schedule InitialBestSchedule { get; set; }

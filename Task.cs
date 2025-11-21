@@ -6,15 +6,6 @@
         public int Priority { get; set; } // Приоритет (1-высокий, 2-средний, 3-низкий)
 
         public double DurationHours { get; set; }
-        public double DurationMinutes
-        {
-            get
-            {
-                return DurationHours * 60;
-            }
-        }
-
-        public bool Fixed { get; set; }
         public TimeOnly StartTime { get; set; }
 
         public Task(string name, double duration, int priority = 2)
@@ -22,6 +13,13 @@
             Name = name;
             DurationHours = duration;
             Priority = priority;
+        }
+
+        public Task(Task task)
+        {
+            Name = task.Name;
+            Priority = task.Priority;
+            DurationHours = task.DurationHours;
         }
 
         public override string ToString() => $"{Name} ({DurationHours}ч)";
@@ -39,9 +37,11 @@
             return this.Name.GetHashCode();
         }
 
+        /*
         public Task Copy()
         {
             return new Task(Name, DurationHours, Priority);
         }
+        */
     }
 }

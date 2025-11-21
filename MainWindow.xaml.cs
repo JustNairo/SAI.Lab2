@@ -5,9 +5,6 @@ using System.Windows.Media.Animation;
 
 namespace Lab2
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         const int PxPerHour = 80;
