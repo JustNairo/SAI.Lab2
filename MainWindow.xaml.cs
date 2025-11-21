@@ -7,8 +7,8 @@ namespace Lab2
 {
     public partial class MainWindow : Window
     {
-        const int PxPerHour = 80;
-        const int maxWorkHours = 8;
+        const int PxPerHour = 80; // Количество пикселей для блока времени в час
+        const int maxWorkHours = 8; // Число рабочих часов
 
         private List<Task> tasks;
         private List<Task> fixedTasks;
@@ -66,28 +66,17 @@ namespace Lab2
             return bestSchedule;
         }
 
+        // Метод вывода блоков задач в правую колонку на окне
         private void ShowTasks(List<Task> tasks, List<Task> fixedTasks)
         {
-            string[] colors = { "#ef9bfa", "#ff9dc4", "#ffb1a1", "#fac593", "#e8da85", "#bbf28f", "#6ef7c8", "#5ee9f7", "#9bd4fa" };
-            int tasksCount = tasks.Count();
-            Brush[] brushes = new Brush[tasksCount];
-            for(int i  = 0; i < tasksCount; i++)
+            // Создаем кисти для покраски блоков
+            string[] colors = { "#ef9bfa", "#ff9dc4", "#ffb1a1", "#fac593", 
+                "#e8da85", "#bbf28f", "#6ef7c8", "#5ee9f7", "#9bd4fa" };
+            Brush[] brushes = new Brush[tasks.Count];
+            for(int i  = 0; i < tasks.Count; i++)
                 brushes[i] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
-            /*
-            Brush[] brushes = new Brush[]
-            {
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ef9bfa")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ff9dc4")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ffb1a1")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#fac593")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e8da85")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#bbf28f")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ef7c8")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5ee9f7")),
-                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9bd4fa")),
-            };
-            */
 
+            // Создаём сами блоки
             for (int i = 0; i < tasks.Count; i++)
             {
                 Border newTask = new Border()
@@ -101,11 +90,13 @@ namespace Lab2
 
                 newTask.Child = label;
 
+                // Добавляем на окно
                 tasksPannel.Children.Add(newTask);
             }
 
         }
 
+        // Метод вывода на экран сформированного расписания
         private void ShowSchedule(Schedule schedule)
         {
             DoubleAnimation appearAnim = new DoubleAnimation()
@@ -115,39 +106,44 @@ namespace Lab2
                 Duration = TimeSpan.FromSeconds(0.5),
             };
 
-            double totalTime = 0;
+            double totalTime = 0; // Время, занятое задачами
 
             for (int i = 0; i < schedule.TaskOrder.Count; i++)
             {
                 Task task = schedule.TaskOrder[i];
-                if (totalTime + task.DurationHours <= maxWorkHours)
+
+                if (totalTime + task.DurationHours > maxWorkHours)
+                    break;
+                // if (totalTime + task.DurationHours <= maxWorkHours)
+                // {
+                totalTime += task.DurationHours;
+
+                // Выводим на окно элемент
+                // tasksPannel.Children - Блоки с задачами
+                foreach (UIElement element in tasksPannel.Children) // КРИНЖ! - переписать
                 {
-                    totalTime += task.DurationHours;
+                    Border childBorder = (Border)element; // Изначально element типа Border
+                    Label childLabel = (Label)childBorder.Child; // У каждого элемента обязательно есть Child - Label
 
-                    foreach (UIElement element in tasksPannel.Children)
+                    string taskToString = task.ToString();
+                    if (childLabel.Content.ToString() == taskToString) 
                     {
-                        var childBorder = (Border)element;
-                        var childLabel = (Label)childBorder.Child;
-
-                        string taskToString = task.ToString();
-                        if (childLabel.Content.ToString() == taskToString)
+                        Border scheduledTask = new Border()
                         {
-                            Border scheduledTask = new Border()
-                            {
-                                Height = task.DurationHours * PxPerHour,
-                                Background = childBorder.Background,
-                                CornerRadius = new CornerRadius(3),
-                            };
-                            Label label = new Label() { Content = childLabel.Content };
+                            Height = task.DurationHours * PxPerHour,
+                            Background = childBorder.Background,
+                            CornerRadius = new CornerRadius(3),
+                        };
+                        Label label = new Label() { Content = childLabel.Content };
 
-                            scheduledTask.Child = label;
+                        scheduledTask.Child = label;
 
-                            element.Visibility = Visibility.Collapsed;
-                            scheduledTask.BeginAnimation(OpacityProperty, appearAnim);
-                            schedulePannel.Children.Add(scheduledTask);
-                        }
+                        element.Visibility = Visibility.Collapsed;
+                        scheduledTask.BeginAnimation(OpacityProperty, appearAnim);
+                        schedulePannel.Children.Add(scheduledTask);
                     }
                 }
+                // }
             }
         }
 
